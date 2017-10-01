@@ -97,7 +97,24 @@ $ sudo touch /boot/ssh
 
 
 
-#### (2-5) 重開機
+#### (2-6) 音響系統停止
+
+這次不需要音響系統。
+
+```console
+$ sudo touch /etc/modprobe.d/blacklist-snd_bcm2835.conf
+$ sudo vi /etc/modprobe.d/blacklist-snd_bcm2835.conf
+```
+
+```/etc/modprobe.d/blacklist-snd_bcm2835.conf``` 的內容是如下引用。
+
+```
+blacklist snd_bcm2835
+```
+
+
+
+#### (2-7) 重開機
 
 ```console
 $ sudo reboot
