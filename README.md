@@ -68,8 +68,7 @@ $ sudo vi /etc/wpa_supplicant/wpa_supplicant.conf
 後面新增 SSID 與其密碼。
 
 ```console
-$ wpa_passphrase SSID PASSPHRASE | \
-  sudo tee --append /etc/wpa_supplicant/wpa_supplicant.conf
+$ wpa_passphrase SSID PASSPHRASE | sudo tee --append /etc/wpa_supplicant/wpa_supplicant.conf
 ```
 
 
@@ -110,4 +109,4 @@ $ sudo reboot
 
 以後不需要接 USB/UART 轉頭器。
 插著 USB Wi-Fi dongle 開機，開機之後把它插進去，都可以。
-開機完成後在遠端利用 ```ssh``` 就可以操作 Raspbian ，
+開機完成後在遠端利用 ```ssh``` 就可以操作 Raspbian 。
