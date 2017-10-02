@@ -118,11 +118,45 @@ blacklist snd_bcm2835
 
 ```console
 $ sudo cp /usr/share/doc/avahi-daemon/examples/ssh.service /etc/avahi/services
+$ sudo service avahi-daemon restart
 ```
 
 參考:
 
  * [Avahi - ArchWiki](https://wiki.archlinux.org/index.php/avahi)
+
+
+#### (2-8) 停止 IPv6
+
+```diff
+--- /etc/avahi/avahi-daemon.conf.0	2017-10-02 11:14:43.530392820 +0000
++++ /etc/avahi/avahi-daemon.conf	2017-10-02 11:14:55.950400237 +0000
+@@ -23,7 +23,7 @@
+ #domain-name=local
+ #browse-domains=0pointer.de, zeroconf.org
+ use-ipv4=yes
+-use-ipv6=yes
++use-ipv6=no
+ #allow-interfaces=eth0
+ #deny-interfaces=eth1
+ #check-response-ttl=no
+```
+
+```diff
+--- /etc/sysctl.conf.0	2017-10-02 11:21:00.650616647 +0000
++++ /etc/sysctl.conf	2017-10-02 11:22:14.480660272 +0000
+@@ -75,3 +75,6 @@
+ # See https://www.kernel.org/doc/Documentation/sysctl/fs.txt
+ #fs.protected_hardlinks=0
+ #fs.protected_symlinks=0
++
++net.ipv6.conf.all.disable_ipv6 = 1
++net.ipv6.conf.default.disable_ipv6 = 1
+```
+
+```console
+$ sudo sysctl --load
+```
 
 
 
