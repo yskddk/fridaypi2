@@ -1,5 +1,7 @@
 # fridaypi2
 
+
+
 ## Raspberry Pi (Raspbian) 初始化步驟
 
 
@@ -173,3 +175,11 @@ $ sudo reboot
 以後不需要接 USB/UART 轉頭器。
 插著 USB Wi-Fi dongle 開機，開機之後把它插進去，都可以。
 開機完成後在遠端利用 ```ssh``` 就可以操作 Raspbian 。
+
+
+
+## Based on
+
+ * [hallard/RPI-Lora-Gateway - GitHub](https://github.com/hallard/RPI-Lora-Gateway)
+ * [hallard/RadioHead - GitHub](https://github.com/hallard/RadioHead)
+ * [hallard/arduino-lmic - GitHub](https://github.com/hallard/arduino-lmic)
