@@ -114,12 +114,23 @@ blacklist snd_bcm2835
 
 
 
-#### (2-7) 重開機
+#### (2-7) 新增 Avahi service (ssh)
+
+```console
+$ sudo cp sudo cp /usr/share/doc/avahi-daemon/examples/ssh.service /etc/avahi/services
+```
+
+
+
+#### (2-8) 重開機
 
 ```console
 $ sudo reboot
 ```
 
+參考:
+
+ * [Avahi - ArchWiki](https://wiki.archlinux.org/index.php/avahi)
 
 
 ### (3) 第二次開機以後……
