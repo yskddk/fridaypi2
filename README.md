@@ -160,7 +160,7 @@ $ sudo sysctl --load
 
 
 
-#### (2-8) 重開機
+#### (2-9) 重開機
 
 ```console
 $ sudo reboot
