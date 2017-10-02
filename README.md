@@ -1,5 +1,7 @@
 # fridaypi2
 
+Based on [hallard/RPI-Lora-Gateway - GitHub](https://github.com/hallard/RPI-Lora-Gateway)
+
 
 
 ## Raspberry Pi (Raspbian) 初始化步驟
@@ -178,8 +180,55 @@ $ sudo reboot
 
 
 
-## Based on
+## 編譯軟體
 
- * [hallard/RPI-Lora-Gateway - GitHub](https://github.com/hallard/RPI-Lora-Gateway)
+
+
+### lib2835.a
+
+ * [C library for Broadcom BCM 2835 as used in Raspberry Pi](http://www.airspayce.com/mikem/bcm2835/)
+
+```console
+$ cd
+$ wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.52.tar.gz
+$ gunzip -c bcm2835-1.52.tar.gz | tar xvf -
+$ cd bcm2835-1.52
+$ ./configure
+$ make -j4
+$ sudo make check
+$ sudo make install
+```
+
+
+
+### RadioHead
+
  * [hallard/RadioHead - GitHub](https://github.com/hallard/RadioHead)
+
+```console
+$ cd
+$ sudo apt-get install git
+$ git clone https://github.com/hallard/RadioHead.git
+$ cd RadioHead/examples/raspi/spi_scan
+$ make
+g++ -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY -c -I../../.. spi_scan.c
+g++ spi_scan.o -lbcm2835  -o spi_scan
+$ sudo ./spi_scan 
+Checking register(0x42) with CS=GPIO06 => Nothing!
+Checking register(0x10) with CS=GPIO06 => Nothing!
+Checking register(0x42) with CS=GPIO07 => SX1276 RF95/96 (V=0x12)
+Checking register(0x10) with CS=GPIO07 => Nothing!
+Checking register(0x42) with CS=GPIO08 => SX1276 RF95/96 (V=0x12)
+Checking register(0x10) with CS=GPIO08 => Nothing!
+Checking register(0x42) with CS=GPIO26 => Nothing!
+Checking register(0x10) with CS=GPIO26 => Nothing!
+```
+
+
+
+### Arduino-LMIC
+
  * [hallard/arduino-lmic - GitHub](https://github.com/hallard/arduino-lmic)
+
+TBD.
+
