@@ -117,7 +117,7 @@ blacklist snd_bcm2835
 #### (2-7) 新增 Avahi service (ssh)
 
 ```console
-$ sudo cp sudo cp /usr/share/doc/avahi-daemon/examples/ssh.service /etc/avahi/services
+$ sudo cp /usr/share/doc/avahi-daemon/examples/ssh.service /etc/avahi/services
 ```
 
 參考:
