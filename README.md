@@ -120,6 +120,10 @@ blacklist snd_bcm2835
 $ sudo cp sudo cp /usr/share/doc/avahi-daemon/examples/ssh.service /etc/avahi/services
 ```
 
+參考:
+
+ * [Avahi - ArchWiki](https://wiki.archlinux.org/index.php/avahi)
+
 
 
 #### (2-8) 重開機
@@ -128,9 +132,6 @@ $ sudo cp sudo cp /usr/share/doc/avahi-daemon/examples/ssh.service /etc/avahi/se
 $ sudo reboot
 ```
 
-參考:
-
- * [Avahi - ArchWiki](https://wiki.archlinux.org/index.php/avahi)
 
 
 ### (3) 第二次開機以後……
