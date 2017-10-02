@@ -205,9 +205,12 @@ $ sudo make install
 
  * [hallard/RadioHead - GitHub](https://github.com/hallard/RadioHead)
 
+
+
+#### Example: spi_scan
+
 ```console
 $ cd
-$ sudo apt-get install git
 $ git clone https://github.com/hallard/RadioHead.git
 $ cd RadioHead/examples/raspi/spi_scan
 $ make
