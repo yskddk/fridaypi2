@@ -217,14 +217,128 @@ $ make
 g++ -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY -c -I../../.. spi_scan.c
 g++ spi_scan.o -lbcm2835  -o spi_scan
 $ sudo ./spi_scan 
+$ sudo ./spi_scan
 Checking register(0x42) with CS=GPIO06 => Nothing!
 Checking register(0x10) with CS=GPIO06 => Nothing!
-Checking register(0x42) with CS=GPIO07 => SX1276 RF95/96 (V=0x12)
+Checking register(0x42) with CS=GPIO07 => Nothing!
 Checking register(0x10) with CS=GPIO07 => Nothing!
 Checking register(0x42) with CS=GPIO08 => SX1276 RF95/96 (V=0x12)
 Checking register(0x10) with CS=GPIO08 => Nothing!
 Checking register(0x42) with CS=GPIO26 => Nothing!
 Checking register(0x10) with CS=GPIO26 => Nothing!
+```
+
+
+
+#### Example: multi_server
+
+做 patch 。
+
+```diff
+--- multi_server.cpp.0	2017-11-12 06:54:24.682667170 +0000
++++ multi_server.cpp	2017-11-12 07:12:27.495111896 +0000
+@@ -33,7 +33,7 @@
+ 
+ // Our RF95 module 1 Configuration 
+ #define RF95_1_NODE_ID    1
+-#define RF95_1_FREQUENCY  868.00
++#define RF95_1_FREQUENCY  920.00
+ 
+ // Our RF95 module 3 Configuration 
+ #define RF95_2_NODE_ID    1
+@@ -49,12 +49,13 @@
+ 
+ // Modules table index
+ #define NB_MODULES 3
++#define ENABLED_NB_MODULES 1
+ uint8_t IRQ_pins[NB_MODULES] = { MOD1_IRQ_PIN, MOD2_IRQ_PIN, MOD3_IRQ_PIN};
+ uint8_t LED_pins[NB_MODULES] = { MOD1_LED_PIN, MOD2_LED_PIN, MOD3_LED_PIN};
+ uint8_t RST_pins[NB_MODULES] = { MOD1_RST_PIN, MOD2_RST_PIN, MOD3_RST_PIN};
+ uint8_t CSN_pins[NB_MODULES] = { MOD1_CS_PIN , MOD2_CS_PIN , MOD3_CS_PIN };
+ 
+-const char * MOD_name[]      = { "1 RF95 868",     "2 RF95 433" ,    "3 RFM69HW 433"  };
++const char * MOD_name[]      = { "1 RF95 920",     "2 RF95 433" ,    "3 RFM69HW 433"  };
+ float MOD_freq[NB_MODULES]   = { RF95_1_FREQUENCY, RF95_2_FREQUENCY, RF69_3_FREQUENCY };
+ uint8_t MOD_id[NB_MODULES]   = { RF95_1_NODE_ID,   RF95_2_NODE_ID,   RF69_3_NODE_ID   };
+ 
+@@ -276,14 +277,14 @@
+ 
+   // configure all modules I/O CS pins to 1 before anything else
+   // to avoid any problem with SPI sharing
+-  for (uint8_t i=0 ; i<NB_MODULES; i++) {
++  for (uint8_t i=0 ; i<ENABLED_NB_MODULES; i++) {
+     // CS Ping as output and set to 1
+     pinMode(CSN_pins[i], OUTPUT);
+     digitalWrite(CSN_pins[i], HIGH);
+   }
+ 
+   // configure all modules I/O pins 
+-  for (uint8_t i=0 ; i<NB_MODULES; i++) {
++  for (uint8_t i=0 ; i<ENABLED_NB_MODULES; i++) {
+     // configure all modules
+     if (!initRadioModule(i)){
+       force_exit = true;
+@@ -293,17 +294,26 @@
+   // All init went fine, continue specific init if any
+   if (!force_exit) {
+     // Set all modules in receive mode
+-    rf95_1.setModeRx();
+-    rf95_2.setModeRx();
+-    rf69_3.setModeRx();
+-    printf( "Listening for incoming packets...\n" );
++    uint8_t i=ENABLED_NB_MODULES;
++    if (i--) { 
++      rf95_1.setModeRx();
++      printf( "Listening[0] for incoming packets...\n");
++      if (i --) {
++        rf95_2.setModeRx();
++        printf( "Listening[0] for incoming packets...\n");
++        if (i --) {
++          rf69_3.setModeRx();
++          printf( "Listening[0] for incoming packets...\n");
++        }
++      }
++    }
+   }
+ 
+   // Begin the main loop code 
+   // ========================
+   while (!force_exit) { 
+     // Loop thru modules
+-    for (uint8_t idx=0 ; idx<NB_MODULES ; idx++) {
++    for (uint8_t idx=0 ; idx<ENABLED_NB_MODULES ; idx++) {
+       // Rising edge fired ?
+       if (bcm2835_gpio_eds(IRQ_pins[idx])) {
+         // Now clear the eds flag by setting it to 1
+@@ -339,7 +349,7 @@
+   // Light off on board LED
+   digitalWrite(LED_PIN, LOW);
+   // All module LEDs off, all modules CS line High
+-  for (uint8_t i=0 ; i<NB_MODULES; i++) {
++  for (uint8_t i=0 ; i<ENABLED_NB_MODULES; i++) {
+     digitalWrite(LED_pins[i], LOW);
+     digitalWrite(CSN_pins[i], HIGH);
+   }
+```
+
+```console
+$ cd
+$ cd RadioHead/examples/raspi/multi_server
+$ make 
+g++ -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY -D__BASEFILE__=\"multi_server\" -c -I../../.. multi_server.cpp
+g++ -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY -D__BASEFILE__=\"RasPi\" -c ../../../RHutil/RasPi.cpp -I../../..
+g++ -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY -D__BASEFILE__=\"RHHardwareSPI\" -c -I../../.. ../../../RHHardwareSPI.cpp
+g++ -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY -D__BASEFILE__=\"RH_RF69\" -c -I../../.. ../../../RH_RF69.cpp
+g++ -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY -D__BASEFILE__=\"RH_RF95\" -c -I../../.. ../../../RH_RF95.cpp
+g++ -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY -D__BASEFILE__=\"RHSPIDriver\" -c -I../../.. ../../../RHSPIDriver.cpp
+g++ -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY -D__BASEFILE__=\"RHGenericDriver\" -c -I../../.. ../../../RHGenericDriver.cpp
+g++ -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY -D__BASEFILE__=\"RHGenericSPI\" -c -I../../.. ../../../RHGenericSPI.cpp
+g++ multi_server.o RasPi.o RHHardwareSPI.o RH_RF69.o RH_RF95.o RHSPIDriver.o RHGenericDriver.o RHGenericSPI.o -lbcm2835 -o multi_server
+$ sudo ./multi_server 
+multi_server
+============
+1 RF95 920 (CS=GPIO8, IRQ=GPIO25, RST=GPIO5, LED=GPIO4) OK!, NodeID=1 @ 920.00MHz
+Listening[0] for incoming packets...
 ```
 
 
